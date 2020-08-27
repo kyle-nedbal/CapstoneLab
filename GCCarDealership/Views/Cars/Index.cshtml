@@ -1,0 +1,103 @@
+﻿@model IEnumerable<GCCarDealership.Models.Car>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Make)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Model)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Year)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Color)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Make)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Model)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Year)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Color)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.CarID">Edit</a> |
+                    <a id="details-@item.CarID" class="details" href="#" data-toggle="modal" data-target="#detailsModal" data-car-id="@item.CarID">Details</a>
+                    <!--<a asp-action="Details" asp-route-id="@item.CarID">Details</a>--> |
+                    <a asp-action="Delete" asp-route-id="@item.CarID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailsModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                A <span id="year"></span>&nbsp;<span id="color"></span>&nbsp;<span id="make"></span>&nbsp;<span id="model"></span>. Visit
+                the Grand Circus Car Dealership to check it out!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script type="text/javascript">$(document).ready(() => {
+            $('#detailsModal').on('show.bs.modal', function (event) {
+                let source = $(event.relatedTarget);
+                let id = source.data('car-id');
+                let modal = $(this);
+                //$.ajax({
+                //    url: `/books/details/${id}`,
+                //    type: 'GET',
+                //    success: function (result) {
+                //        modal.find("#exampleModalLabel").text(`Details for ${data.title}`);
+                //        modal.find("#title").text(data.title);
+                //        modal.find("#author").text(data.author);
+                //    }
+                //});
+                $.get(`/Cars/details/${id}`, function (data, status) {
+                    modal.find("#detailsModalLabel").text(`Details for ${data.id}`);
+                    modal.find("#year").text(data.year);
+                    modal.find("#color").text(data.color);
+                    modal.find("#make").text(data.make);
+                    modal.find("#model").text(data.model);
+                });
+            });
+        });</script>
+
+}
